@@ -1,20 +1,11 @@
-const pool = require('../db/pool');
+const pool = require('../db');
 
 const listarOficinas = async (req, res) => {
   try {
-    const { servico, cidade } = req.query;
-
-    const result = await pool.query(
-      `SELECT * FROM oficinas
-       WHERE ($1::text IS NULL OR servicos @> ARRAY[$1])
-       AND ($2::text IS NULL OR cidade ILIKE $2)`,
-      [servico || null, cidade ? `%${cidade}%` : null]
-    );
-
-    res.json(result.rows);
+    const resultado = await pool.query('SELECT * FROM oficinas');
+    res.json(resultado.rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Erro ao buscar oficinas" });
+    res.status(500).json({ erro: 'Erro ao buscar oficinas' });
   }
 };
 
